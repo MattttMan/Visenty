@@ -470,3 +470,45 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Scroll animations for sections
+const sectionTitles = document.querySelectorAll('.section-title');
+
+const observerOptions = {
+    threshold: 0.3,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+sectionTitles.forEach(title => {
+    sectionObserver.observe(title);
+});
+
+// Parallax effect for sections on scroll
+function handleScroll() {
+    const scrollY = window.scrollY;
+    const sections = document.querySelectorAll('.section');
+    
+    sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const sectionCenter = rect.top + rect.height / 2;
+        const viewportCenter = window.innerHeight / 2;
+        const distanceFromCenter = sectionCenter - viewportCenter;
+        
+        const parallaxOffset = distanceFromCenter * 0.05;
+        const title = section.querySelector('.section-title');
+        
+        if (title && title.classList.contains('visible')) {
+            title.style.transform = `translateY(${parallaxOffset}px)`;
+        }
+    });
+}
+
+window.addEventListener('scroll', handleScroll, { passive: true });
