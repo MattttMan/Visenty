@@ -480,8 +480,24 @@ const musicPlayer = document.querySelector('.music-player');
 let isPlaying = false;
 let wasPlayingBeforeMute = false;
 
+// Ensure music player is visible
+if (musicPlayer) {
+    musicPlayer.style.display = 'flex';
+    musicPlayer.style.visibility = 'visible';
+    musicPlayer.style.opacity = '1';
+}
+
 // Set initial volume
-audio.volume = volumeSlider.value / 100;
+if (audio && volumeSlider) {
+    audio.volume = volumeSlider.value / 100;
+}
+
+// Check if audio element exists
+if (!audio) {
+    console.error('Audio element not found!');
+if (!musicPlayer) {
+    console.error('Music player element not found!');
+}
 
 // Play/Pause toggle
 musicToggle.addEventListener('click', () => {
@@ -543,18 +559,45 @@ audio.addEventListener('pause', () => {
 });
 
 // Handle audio errors gracefully
-audio.addEventListener('error', (e) => {
-    console.log('Audio error:', e);
-    // You can add user-friendly error handling here
-    const musicInfo = document.querySelector('.music-info');
-    if (musicInfo) {
-        const title = musicInfo.querySelector('.music-title');
-        if (title) {
-            title.textContent = 'No audio file';
-            title.style.color = 'rgba(255, 255, 255, 0.4)';
-        }
-    }
-});
+if (audio) {
+    audio.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+        console.error('Audio src:', audio.src);
+        console.error('Audio readyState:', audio.readyState);
+        
+        // Check if file exists
+        fetch('music.mp3', { method: 'HEAD' })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Music file not found or not accessible');
+                    const musicInfo = document.querySelector('.music-info');
+                    if (musicInfo) {
+                        const title = musicInfo.querySelector('.music-title');
+                        if (title) {
+                            title.textContent = 'File not found';
+                            title.style.color = 'rgba(255, 100, 100, 0.8)';
+                        }
+                    }
+                }
+            })
+            .catch(err => {
+                console.error('Error checking music file:', err);
+            });
+    });
+    
+    // Debug audio loading
+    audio.addEventListener('loadstart', () => {
+        console.log('Audio loading started');
+    });
+    
+    audio.addEventListener('canplay', () => {
+        console.log('Audio can play');
+    });
+    
+    audio.addEventListener('loadeddata', () => {
+        console.log('Audio data loaded');
+    });
+}
 
 // Sync visualizer with audio (if available)
 audio.addEventListener('loadedmetadata', () => {
