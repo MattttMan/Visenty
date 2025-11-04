@@ -470,3 +470,104 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Premium Music Player
+const audio = document.getElementById('backgroundMusic');
+const musicToggle = document.getElementById('musicToggle');
+const volumeToggle = document.getElementById('volumeToggle');
+const volumeSlider = document.getElementById('volumeSlider');
+const musicPlayer = document.querySelector('.music-player');
+let isPlaying = false;
+let wasPlayingBeforeMute = false;
+
+// Set initial volume
+audio.volume = volumeSlider.value / 100;
+
+// Play/Pause toggle
+musicToggle.addEventListener('click', () => {
+    if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        musicToggle.classList.remove('playing');
+        musicPlayer.classList.remove('playing');
+    } else {
+        // User interaction required for autoplay
+        audio.play().then(() => {
+            isPlaying = true;
+            musicToggle.classList.add('playing');
+            musicPlayer.classList.add('playing');
+        }).catch(error => {
+            console.log('Autoplay prevented:', error);
+            // Show a message or handle the error
+        });
+    }
+});
+
+// Volume slider
+volumeSlider.addEventListener('input', (e) => {
+    const volume = e.target.value / 100;
+    audio.volume = volume;
+    
+    if (volume === 0) {
+        volumeToggle.classList.add('muted');
+    } else {
+        volumeToggle.classList.remove('muted');
+    }
+});
+
+// Volume toggle (mute/unmute)
+volumeToggle.addEventListener('click', () => {
+    if (audio.volume > 0) {
+        wasPlayingBeforeMute = isPlaying;
+        audio.volume = 0;
+        volumeSlider.value = 0;
+        volumeToggle.classList.add('muted');
+    } else {
+        audio.volume = 0.5;
+        volumeSlider.value = 50;
+        volumeToggle.classList.remove('muted');
+    }
+});
+
+// Update visualizer animation based on playback state
+audio.addEventListener('play', () => {
+    isPlaying = true;
+    musicToggle.classList.add('playing');
+    musicPlayer.classList.add('playing');
+});
+
+audio.addEventListener('pause', () => {
+    isPlaying = false;
+    musicToggle.classList.remove('playing');
+    musicPlayer.classList.remove('playing');
+});
+
+// Handle audio errors gracefully
+audio.addEventListener('error', (e) => {
+    console.log('Audio error:', e);
+    // You can add user-friendly error handling here
+    const musicInfo = document.querySelector('.music-info');
+    if (musicInfo) {
+        const title = musicInfo.querySelector('.music-title');
+        if (title) {
+            title.textContent = 'No audio file';
+            title.style.color = 'rgba(255, 255, 255, 0.4)';
+        }
+    }
+});
+
+// Sync visualizer with audio (if available)
+audio.addEventListener('loadedmetadata', () => {
+    console.log('Audio loaded successfully');
+});
+
+// Optional: Auto-play on first user interaction (click anywhere)
+let hasInteracted = false;
+document.addEventListener('click', () => {
+    if (!hasInteracted && !isPlaying) {
+        hasInteracted = true;
+        // Optionally auto-play when user first interacts
+        // Uncomment the next line if you want auto-play on first click
+        // audio.play().catch(() => {});
+    }
+}, { once: true });
