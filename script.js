@@ -495,68 +495,77 @@ if (audio && volumeSlider) {
 // Check if audio element exists
 if (!audio) {
     console.error('Audio element not found!');
+}
 if (!musicPlayer) {
     console.error('Music player element not found!');
 }
 
 // Play/Pause toggle
-musicToggle.addEventListener('click', () => {
-    if (isPlaying) {
-        audio.pause();
+if (musicToggle && audio) {
+    musicToggle.addEventListener('click', () => {
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            musicToggle.classList.remove('playing');
+            if (musicPlayer) musicPlayer.classList.remove('playing');
+        } else {
+            // User interaction required for autoplay
+            audio.play().then(() => {
+                isPlaying = true;
+                musicToggle.classList.add('playing');
+                if (musicPlayer) musicPlayer.classList.add('playing');
+            }).catch(error => {
+                console.error('Autoplay prevented:', error);
+                // Show a message or handle the error
+            });
+        }
+    });
+}
+
+// Volume slider
+if (volumeSlider && audio) {
+    volumeSlider.addEventListener('input', (e) => {
+        const volume = e.target.value / 100;
+        audio.volume = volume;
+        
+        if (volume === 0) {
+            if (volumeToggle) volumeToggle.classList.add('muted');
+        } else {
+            if (volumeToggle) volumeToggle.classList.remove('muted');
+        }
+    });
+}
+
+// Volume toggle (mute/unmute)
+if (volumeToggle && audio && volumeSlider) {
+    volumeToggle.addEventListener('click', () => {
+        if (audio.volume > 0) {
+            wasPlayingBeforeMute = isPlaying;
+            audio.volume = 0;
+            volumeSlider.value = 0;
+            volumeToggle.classList.add('muted');
+        } else {
+            audio.volume = 0.5;
+            volumeSlider.value = 50;
+            volumeToggle.classList.remove('muted');
+        }
+    });
+}
+
+// Update visualizer animation based on playback state
+if (audio && musicToggle && musicPlayer) {
+    audio.addEventListener('play', () => {
+        isPlaying = true;
+        musicToggle.classList.add('playing');
+        musicPlayer.classList.add('playing');
+    });
+
+    audio.addEventListener('pause', () => {
         isPlaying = false;
         musicToggle.classList.remove('playing');
         musicPlayer.classList.remove('playing');
-    } else {
-        // User interaction required for autoplay
-        audio.play().then(() => {
-            isPlaying = true;
-            musicToggle.classList.add('playing');
-            musicPlayer.classList.add('playing');
-        }).catch(error => {
-            console.log('Autoplay prevented:', error);
-            // Show a message or handle the error
-        });
-    }
-});
-
-// Volume slider
-volumeSlider.addEventListener('input', (e) => {
-    const volume = e.target.value / 100;
-    audio.volume = volume;
-    
-    if (volume === 0) {
-        volumeToggle.classList.add('muted');
-    } else {
-        volumeToggle.classList.remove('muted');
-    }
-});
-
-// Volume toggle (mute/unmute)
-volumeToggle.addEventListener('click', () => {
-    if (audio.volume > 0) {
-        wasPlayingBeforeMute = isPlaying;
-        audio.volume = 0;
-        volumeSlider.value = 0;
-        volumeToggle.classList.add('muted');
-    } else {
-        audio.volume = 0.5;
-        volumeSlider.value = 50;
-        volumeToggle.classList.remove('muted');
-    }
-});
-
-// Update visualizer animation based on playback state
-audio.addEventListener('play', () => {
-    isPlaying = true;
-    musicToggle.classList.add('playing');
-    musicPlayer.classList.add('playing');
-});
-
-audio.addEventListener('pause', () => {
-    isPlaying = false;
-    musicToggle.classList.remove('playing');
-    musicPlayer.classList.remove('playing');
-});
+    });
+}
 
 // Handle audio errors gracefully
 if (audio) {
@@ -600,9 +609,11 @@ if (audio) {
 }
 
 // Sync visualizer with audio (if available)
-audio.addEventListener('loadedmetadata', () => {
-    console.log('Audio loaded successfully');
-});
+if (audio) {
+    audio.addEventListener('loadedmetadata', () => {
+        console.log('Audio loaded successfully');
+    });
+}
 
 // Optional: Auto-play on first user interaction (click anywhere)
 let hasInteracted = false;
