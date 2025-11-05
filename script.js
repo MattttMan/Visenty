@@ -471,44 +471,75 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Scroll animations for sections
+// Scroll animations for sections with smooth fade-in/out
 const sectionTitles = document.querySelectorAll('.section-title');
 
+if (sectionTitles.length > 0) {
+    document.body.classList.add('animations-enabled');
+}
+
 const observerOptions = {
-    threshold: 0.3,
+    threshold: [0, 0.2, 0.5, 0.8],
     rootMargin: '0px 0px -100px 0px'
 };
 
 const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+            // Calculate visibility percentage for smoother transition
+            const ratio = entry.intersectionRatio;
+            if (ratio > 0.2) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, 100);
+            }
+        } else if (entry.boundingClientRect.bottom < -120 || entry.boundingClientRect.top > window.innerHeight + 120) {
+            entry.target.classList.remove('visible');
         }
     });
 }, observerOptions);
 
-sectionTitles.forEach(title => {
+// Observe sections
+sectionTitles.forEach((title, index) => {
     sectionObserver.observe(title);
+    
+    // Check if already in viewport on load
+    const rect = title.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 1.2 && rect.bottom > -100) {
+        setTimeout(() => {
+            title.classList.add('visible');
+        }, 400 + (index * 150));
+    }
 });
 
-// Parallax effect for sections on scroll
+// Enhanced scroll handler with smooth transitions
+let ticking = false;
 function handleScroll() {
-    const scrollY = window.scrollY;
-    const sections = document.querySelectorAll('.section');
-    
-    sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        const sectionCenter = rect.top + rect.height / 2;
-        const viewportCenter = window.innerHeight / 2;
-        const distanceFromCenter = sectionCenter - viewportCenter;
-        
-        const parallaxOffset = distanceFromCenter * 0.05;
-        const title = section.querySelector('.section-title');
-        
-        if (title && title.classList.contains('visible')) {
-            title.style.transform = `translateY(${parallaxOffset}px)`;
-        }
-    });
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            const sections = document.querySelectorAll('.section');
+            
+            sections.forEach((section) => {
+                const rect = section.getBoundingClientRect();
+                const sectionCenter = rect.top + rect.height / 2;
+                const viewportCenter = window.innerHeight / 2;
+                const distanceFromCenter = sectionCenter - viewportCenter;
+                
+                const parallaxOffset = distanceFromCenter * 0.015;
+                const title = section.querySelector('.section-title');
+                
+                if (title && title.classList.contains('visible')) {
+                    // Apply subtle parallax with smooth easing
+                    title.style.transform = `translateY(${parallaxOffset}px) scale(1)`;
+                } else if (title) {
+                    title.style.transform = '';
+                }
+            });
+            
+            ticking = false;
+        });
+        ticking = true;
+    }
 }
 
 window.addEventListener('scroll', handleScroll, { passive: true });

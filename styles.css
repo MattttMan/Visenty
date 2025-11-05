@@ -340,9 +340,10 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 100;
     perspective: 2000px;
     padding: 4rem 2rem;
+    background: transparent;
 }
 
 .section-content {
@@ -355,38 +356,179 @@ body::before {
 }
 
 .section-title {
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    color: var(--primary);
-    line-height: 1.2;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 0 30px rgba(0, 245, 255, 0.2));
+    font-size: clamp(1.65rem, 4.6vw, 3.4rem);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    line-height: 1.38;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 1.5s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.8s ease-out,
+                letter-spacing 1.2s ease-out;
+    filter: drop-shadow(0 10px 30px rgba(0, 245, 255, 0.18));
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: center;
+    text-align: center;
+    text-transform: none;
+    visibility: visible !important;
+    position: relative;
+    z-index: 101;
+    will-change: opacity, transform, filter;
 }
 
-.section-title.visible {
+body.animations-enabled .section-title {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+    filter: drop-shadow(0 0 18px rgba(0, 245, 255, 0.09)) blur(2px);
+}
+
+body.animations-enabled .section-title.visible {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1);
+    letter-spacing: 0.1em;
+    filter: drop-shadow(0 12px 38px rgba(0, 245, 255, 0.24)) blur(0);
+}
+
+.section-title span,
+.section-title span span {
+    display: block;
+}
+
+.title-eyebrow {
+    font-size: clamp(0.75rem, 1.4vw, 1.1rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.56);
+}
+
+.title-headline {
+    font-size: clamp(1.8rem, 5.5vw, 3.1rem);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: center;
+}
+
+.title-headline--centered {
+    text-align: center;
+}
+
+.title-figure {
+    font-size: clamp(2.6rem, 7vw, 4.8rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    line-height: 1.08;
+}
+
+.title-figure--accent {
+    color: var(--accent);
+}
+
+.title-support {
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    letter-spacing: 0.08em;
+    font-weight: 300;
+    text-transform: none;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body.animations-enabled .section-title span,
+body.animations-enabled .section-title span span {
     opacity: 1;
     transform: translateY(0);
+    transition: opacity 0.9s ease, transform 0.9s ease;
 }
 
-.section-1 .section-title {
-    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 50%, #ffffff 100%);
+body.animations-enabled .section-title:not(.visible) span,
+body.animations-enabled .section-title:not(.visible) span span {
+    opacity: 0;
+    transform: translateY(16px);
+}
+
+body.animations-enabled .section-title.visible .title-headline {
+    transition-delay: 0.08s;
+}
+
+body.animations-enabled .section-title.visible .title-support {
+    transition-delay: 0.16s;
+}
+
+body.animations-enabled .section-title.visible .title-figure {
+    transition-delay: 0.12s;
+}
+
+body.animations-enabled .section-title.visible .title-note {
+    transition-delay: 0.24s;
+}
+
+/* Fallback for browsers that don't support text gradients */
+@supports not (-webkit-background-clip: text) {
+    .section-1 .title-figure {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    
+    .section-2 .title-figure {
+        color: #00f5ff !important;
+        -webkit-text-fill-color: #00f5ff !important;
+    }
+}
+
+.section-1 .title-eyebrow {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.section-1 .title-figure {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: none;
+    text-shadow: 0 8px 25px rgba(0, 245, 255, 0.12);
+    transition: inherit;
+}
+
+.section-1 .section-title.visible .title-figure {
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.95) 50%, #ffffff 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     background-size: 200% 200%;
     animation: shimmer 4s ease-in-out infinite;
+    filter: drop-shadow(0 12px 35px rgba(255, 255, 255, 0.28)) blur(0);
 }
 
-.section-2 .section-title {
-    background: linear-gradient(135deg, var(--accent) 0%, rgba(0, 245, 255, 0.8) 50%, var(--accent) 100%);
+.section-2 .title-eyebrow {
+    color: rgba(0, 245, 255, 0.55);
+}
+
+.section-2 .title-figure {
+    color: #00f5ff !important;
+    -webkit-text-fill-color: #00f5ff !important;
+    background: none;
+    text-shadow: 0 8px 25px rgba(0, 245, 255, 0.18);
+    transition: inherit;
+}
+
+.section-2 .section-title.visible .title-figure {
+    background: linear-gradient(135deg, #00f5ff 0%, rgba(0, 245, 255, 0.9) 50%, #00f5ff 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     background-size: 200% 200%;
     animation: shimmer 4s ease-in-out infinite 1s;
+    filter: drop-shadow(0 12px 35px rgba(0, 245, 255, 0.32)) blur(0);
 }
 
 /* Scroll animations */
