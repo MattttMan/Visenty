@@ -200,9 +200,56 @@ function animateParallax() {
 // Only run once to set fixed position
 animateParallax();
 
-// Custom cursor disabled - using default system cursor
+// Custom cursor - minimal and elegant
+const cursor = document.createElement('div');
+cursor.className = 'custom-cursor';
+document.body.appendChild(cursor);
 
-// Interactive hover effects disabled
+const cursorDot = document.createElement('div');
+cursorDot.className = 'custom-cursor-dot';
+document.body.appendChild(cursorDot);
+
+let cursorX = 0;
+let cursorY = 0;
+let cursorDotX = 0;
+let cursorDotY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+});
+
+function animateCursor() {
+    cursorDotX += (cursorX - cursorDotX) * 0.2;
+    cursorDotY += (cursorY - cursorDotY) * 0.2;
+    
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    cursor.style.transform = `translate(-50%, -50%) scale(${1 + Math.sin(Date.now() * 0.004) * 0.08})`;
+    
+    cursorDot.style.left = cursorDotX + 'px';
+    cursorDot.style.top = cursorDotY + 'px';
+    
+    requestAnimationFrame(animateCursor);
+}
+
+animateCursor();
+
+// Interactive hover effects for cursor
+const interactiveElements = [companyName, taglineText];
+interactiveElements.forEach(element => {
+    element.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+        cursorDot.classList.add('hover');
+        element.classList.add('interactive-hover');
+    });
+    
+    element.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+        cursorDot.classList.remove('hover');
+        element.classList.remove('interactive-hover');
+    });
+});
 
 magneticElements.forEach(element => {
     magneticTargets[element] = { x: 0, y: 0 };
@@ -561,4 +608,15 @@ window.addEventListener('scroll', () => {
 });
 
 // Add hover effects to interactive elements
-// All interactive cursor effects disabled
+const allInteractiveElements = document.querySelectorAll('a, button, .nav-link, .contact-submit');
+allInteractiveElements.forEach(element => {
+    element.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+        cursorDot.classList.add('hover');
+    });
+    
+    element.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+        cursorDot.classList.remove('hover');
+    });
+});

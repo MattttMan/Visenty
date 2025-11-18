@@ -264,7 +264,45 @@ body {
 }
 
 /* Custom Cursor */
-/* Custom cursor disabled - using default system cursor */
+.custom-cursor {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.2s ease-out, border-color 0.3s ease;
+    mix-blend-mode: difference;
+    backdrop-filter: blur(2px);
+}
+
+.custom-cursor.hover {
+    transform: translate(-50%, -50%) scale(1.5);
+    border-color: rgba(0, 245, 255, 0.6);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+}
+
+.custom-cursor:active {
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+.custom-cursor-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease-out, background 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+}
+
+.custom-cursor-dot.hover {
+    background: var(--accent);
+    transform: scale(1.5);
+}
 
 /* Enhanced visual effects */
 body::before {
