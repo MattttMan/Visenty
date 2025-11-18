@@ -189,107 +189,20 @@ companyName.addEventListener('mouseleave', () => {
     isHovering = false;
 });
 
+// Parallax disabled - keeping text fixed
 function animateParallax() {
-    targetX += (mouseX - targetX) * 0.04;
-    targetY += (mouseY - targetY) * 0.04;
-    
-    const rotateY = targetX * 2;
-    const rotateX = -targetY * 2;
-    const scale = isHovering ? 1.02 : 1;
-    
-    content.style.transform = `
-        perspective(2000px)
-        rotateY(${rotateY}deg)
-        rotateX(${rotateX}deg)
-        translateZ(0)
-    `;
-    
-    // Word animation with subtle floating effect + magnetic
-    const wordRotateY = targetX * 1.5;
-    const wordRotateX = -targetY * 1.5;
-    const wordZ = Math.sin(Date.now() * 0.001) * 5;
-    const magneticX = magneticOffsets[companyName]?.x || 0;
-    const magneticY = magneticOffsets[companyName]?.y || 0;
-    
-    word.style.transform = `
-        translateZ(${wordZ}px)
-        translateX(${magneticX}px)
-        translateY(${magneticY}px)
-        rotateY(${wordRotateY}deg)
-        rotateX(${wordRotateX}deg)
-        scale(${scale})
-    `;
-    
-    // Tagline subtle movement + magnetic
-    const taglineRotateY = targetX * 1;
-    const taglineRotateX = -targetY * 1;
-    const taglineMagneticX = magneticOffsets[tagline]?.x || 0;
-    const taglineMagneticY = magneticOffsets[tagline]?.y || 0;
-    
-    tagline.style.transform = `
-        perspective(1000px)
-        translateX(${taglineMagneticX}px)
-        translateY(${taglineMagneticY}px)
-        rotateY(${taglineRotateY}deg)
-        rotateX(${taglineRotateX}deg)
-        translateZ(10px)
-    `;
-    
-    requestAnimationFrame(animateParallax);
+    // Text stays fixed - no movement
+    content.style.transform = `none`;
+    word.style.transform = `none`;
+    tagline.style.transform = `none`;
 }
 
+// Only run once to set fixed position
 animateParallax();
 
-// Custom cursor - minimal and elegant
-const cursor = document.createElement('div');
-cursor.className = 'custom-cursor';
-document.body.appendChild(cursor);
+// Custom cursor disabled - using default system cursor
 
-const cursorDot = document.createElement('div');
-cursorDot.className = 'custom-cursor-dot';
-document.body.appendChild(cursorDot);
-
-let cursorX = 0;
-let cursorY = 0;
-let cursorDotX = 0;
-let cursorDotY = 0;
-
-document.addEventListener('mousemove', (e) => {
-    cursorX = e.clientX;
-    cursorY = e.clientY;
-});
-
-function animateCursor() {
-    cursorDotX += (cursorX - cursorDotX) * 0.2;
-    cursorDotY += (cursorY - cursorDotY) * 0.2;
-    
-    cursor.style.left = cursorX + 'px';
-    cursor.style.top = cursorY + 'px';
-    cursor.style.transform = `translate(-50%, -50%) scale(${1 + Math.sin(Date.now() * 0.004) * 0.08})`;
-    
-    cursorDot.style.left = cursorDotX + 'px';
-    cursorDot.style.top = cursorDotY + 'px';
-    
-    requestAnimationFrame(animateCursor);
-}
-
-animateCursor();
-
-// Interactive hover effects for cursor
-const interactiveElements = [companyName, taglineText];
-interactiveElements.forEach(element => {
-    element.addEventListener('mouseenter', () => {
-        cursor.classList.add('hover');
-        cursorDot.classList.add('hover');
-        element.classList.add('interactive-hover');
-    });
-    
-    element.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hover');
-        cursorDot.classList.remove('hover');
-        element.classList.remove('interactive-hover');
-    });
-});
+// Interactive hover effects disabled
 
 magneticElements.forEach(element => {
     magneticTargets[element] = { x: 0, y: 0 };
@@ -648,15 +561,4 @@ window.addEventListener('scroll', () => {
 });
 
 // Add hover effects to interactive elements
-const allInteractiveElements = document.querySelectorAll('a, button, .nav-link, .contact-submit');
-allInteractiveElements.forEach(element => {
-    element.addEventListener('mouseenter', () => {
-        cursor.classList.add('hover');
-        cursorDot.classList.add('hover');
-    });
-    
-    element.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hover');
-        cursorDot.classList.remove('hover');
-    });
-});
+// All interactive cursor effects disabled
