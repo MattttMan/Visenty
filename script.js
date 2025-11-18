@@ -145,8 +145,15 @@ document.addEventListener('mousemove', (e) => {
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.height = Math.max(window.innerHeight, document.documentElement.scrollHeight);
 });
+
+// Update canvas height on scroll
+function updateCanvasHeight() {
+    canvas.height = Math.max(window.innerHeight, document.documentElement.scrollHeight);
+}
+updateCanvasHeight();
+window.addEventListener('scroll', updateCanvasHeight);
 
 // 3D Parallax effect - ultra smooth and premium
 const content = document.querySelector('.content');
@@ -154,6 +161,11 @@ const companyName = document.querySelector('.company-name');
 const word = document.querySelector('.word');
 const tagline = document.querySelector('.tagline');
 const taglineText = document.querySelector('.tagline-text');
+
+// Magnetic hover setup
+let magneticElements = [companyName, tagline];
+let magneticTargets = {};
+const magneticOffsets = {};
 
 let mouseX = 0;
 let mouseY = 0;
@@ -279,10 +291,6 @@ interactiveElements.forEach(element => {
     });
 });
 
-// Magnetic hover effect
-let magneticElements = [companyName, tagline];
-let magneticTargets = {};
-
 magneticElements.forEach(element => {
     magneticTargets[element] = { x: 0, y: 0 };
     
@@ -301,8 +309,6 @@ magneticElements.forEach(element => {
     });
 });
 
-// Magnetic offset tracking
-const magneticOffsets = {};
 magneticElements.forEach(element => {
     magneticOffsets[element] = { x: 0, y: 0 };
 });
@@ -471,75 +477,186 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Scroll animations for sections with smooth fade-in/out
-const sectionTitles = document.querySelectorAll('.section-title');
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            const navHeight = document.querySelector('.main-nav').offsetHeight;
+            const targetPosition = target.offsetTop - navHeight;
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
 
-if (sectionTitles.length > 0) {
-    document.body.classList.add('animations-enabled');
-}
-
+// Intersection Observer for scroll animations
 const observerOptions = {
-    threshold: [0, 0.2, 0.5, 0.8],
+    threshold: 0.1,
     rootMargin: '0px 0px -100px 0px'
 };
 
-const sectionObserver = new IntersectionObserver((entries) => {
+const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            // Calculate visibility percentage for smoother transition
-            const ratio = entry.intersectionRatio;
-            if (ratio > 0.2) {
-                setTimeout(() => {
-                    entry.target.classList.add('visible');
-                }, 100);
-            }
-        } else if (entry.boundingClientRect.bottom < -120 || entry.boundingClientRect.top > window.innerHeight + 120) {
-            entry.target.classList.remove('visible');
+            entry.target.classList.add('visible');
         }
     });
 }, observerOptions);
 
-// Observe sections
-sectionTitles.forEach((title, index) => {
-    sectionObserver.observe(title);
-    
-    // Check if already in viewport on load
-    const rect = title.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 1.2 && rect.bottom > -100) {
-        setTimeout(() => {
-            title.classList.add('visible');
-        }, 400 + (index * 150));
-    }
-});
+// Observe all elements that need scroll animations
+const animatedElements = document.querySelectorAll(`
+    .section-header,
+    .stat-card,
+    .problem-text,
+    .work-step,
+    .flow-node,
+    .flow-connector,
+    .solution-main-text,
+    .solution-network-text,
+    .capability-card,
+    .network-intro,
+    .network-item,
+    .contact-form
+`);
 
-// Enhanced scroll handler with smooth transitions
-let ticking = false;
-function handleScroll() {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            const sections = document.querySelectorAll('.section');
-            
-            sections.forEach((section) => {
-                const rect = section.getBoundingClientRect();
-                const sectionCenter = rect.top + rect.height / 2;
-                const viewportCenter = window.innerHeight / 2;
-                const distanceFromCenter = sectionCenter - viewportCenter;
-                
-                const parallaxOffset = distanceFromCenter * 0.015;
-                const title = section.querySelector('.section-title');
-                
-                if (title && title.classList.contains('visible')) {
-                    // Apply subtle parallax with smooth easing
-                    title.style.transform = `translateY(${parallaxOffset}px) scale(1)`;
-                } else if (title) {
-                    title.style.transform = '';
-                }
-            });
-            
-            ticking = false;
-        });
-        ticking = true;
-    }
+animatedElements.forEach(el => observer.observe(el));
+
+// Animated counters
+function animateCounter(element, target, duration = 2000, prefix = '') {
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = prefix + formatNumber(target);
+            clearInterval(timer);
+        } else {
+            element.textContent = prefix + formatNumber(Math.floor(current));
+        }
+    }, 16);
 }
 
-window.addEventListener('scroll', handleScroll, { passive: true });
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace('.0', '') + 'M';
+    } else if (num >= 1000) {
+        return num.toLocaleString();
+    }
+    return num.toString();
+}
+
+// Observe stat cards and impact stats for counter animation
+const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+            entry.target.classList.add('counted');
+            const numberElement = entry.target.querySelector('.stat-number');
+            const target = parseInt(entry.target.dataset.target || (numberElement && numberElement.dataset.target) || 0);
+            const prefix = entry.target.dataset.prefix || '';
+            if (numberElement && target) {
+                animateCounter(numberElement, target, 2000, prefix);
+            }
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-card').forEach(card => {
+    statObserver.observe(card);
+});
+
+// Flow node animation sequence
+const flowNodes = document.querySelectorAll('.flow-node');
+const flowConnectors = document.querySelectorAll('.flow-connector');
+
+const flowObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            flowNodes.forEach((node, index) => {
+                setTimeout(() => {
+                    node.classList.add('visible');
+                }, index * 300);
+            });
+            
+            flowConnectors.forEach((connector, index) => {
+                setTimeout(() => {
+                    connector.classList.add('visible');
+                }, (index + 1) * 300);
+            });
+        }
+    });
+}, { threshold: 0.3 });
+
+const solutionVisual = document.querySelector('.solution-visual');
+if (solutionVisual) {
+    flowObserver.observe(solutionVisual);
+}
+
+// Form handling
+const contactForm = document.getElementById('contactForm');
+const contactSuccess = document.getElementById('contactSuccess');
+const contactSuccessDefault = contactSuccess?.textContent;
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(contactForm);
+        const variables = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            company: formData.get('company'),
+            message: formData.get('message'),
+            time: new Date().toLocaleString()
+        };
+
+        try {
+            await emailjs.send('service_5zkgd8k', 'template_f9qg8j6', variables);
+            if (contactSuccessDefault) {
+                contactSuccess.textContent = contactSuccessDefault;
+            }
+            contactSuccess.style.display = 'block';
+            contactForm.reset();
+        } catch (error) {
+            contactSuccess.style.display = 'block';
+            contactSuccess.textContent = 'Unable to send right now. Please email matthewdwulff@gmail.com.';
+            console.error('EmailJS error', error);
+        }
+    });
+}
+
+// Navbar scroll effect
+let lastScroll = 0;
+const nav = document.querySelector('.main-nav');
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 100) {
+        nav.style.background = 'rgba(0, 0, 0, 0.6)';
+        nav.style.backdropFilter = 'blur(30px)';
+    } else {
+        nav.style.background = 'rgba(0, 0, 0, 0.3)';
+        nav.style.backdropFilter = 'blur(20px)';
+    }
+    
+    lastScroll = currentScroll;
+});
+
+// Add hover effects to interactive elements
+const allInteractiveElements = document.querySelectorAll('a, button, .nav-link, .contact-submit');
+allInteractiveElements.forEach(element => {
+    element.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+        cursorDot.classList.add('hover');
+    });
+    
+    element.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+        cursorDot.classList.remove('hover');
+    });
+});
