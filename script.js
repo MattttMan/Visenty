@@ -203,16 +203,18 @@ animateParallax();
 // Custom cursor - minimal and elegant
 const cursor = document.createElement('div');
 cursor.className = 'custom-cursor';
+cursor.style.opacity = '1';
 document.body.appendChild(cursor);
 
 const cursorDot = document.createElement('div');
 cursorDot.className = 'custom-cursor-dot';
+cursorDot.style.opacity = '1';
 document.body.appendChild(cursorDot);
 
-let cursorX = 0;
-let cursorY = 0;
-let cursorDotX = 0;
-let cursorDotY = 0;
+let cursorX = window.innerWidth / 2;
+let cursorY = window.innerHeight / 2;
+let cursorDotX = cursorX;
+let cursorDotY = cursorY;
 
 document.addEventListener('mousemove', (e) => {
     cursorX = e.clientX;
@@ -225,10 +227,13 @@ function animateCursor() {
     
     cursor.style.left = cursorX + 'px';
     cursor.style.top = cursorY + 'px';
+    cursor.style.opacity = '1';
     cursor.style.transform = `translate(-50%, -50%) scale(${1 + Math.sin(Date.now() * 0.004) * 0.08})`;
     
     cursorDot.style.left = cursorDotX + 'px';
     cursorDot.style.top = cursorDotY + 'px';
+    cursorDot.style.opacity = '1';
+    cursorDot.style.transform = 'translate(-50%, -50%)';
     
     requestAnimationFrame(animateCursor);
 }

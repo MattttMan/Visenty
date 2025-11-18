@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    cursor: none !important;
 }
 
 :root {
@@ -275,6 +276,8 @@ body {
     transition: transform 0.2s ease-out, border-color 0.3s ease;
     mix-blend-mode: difference;
     backdrop-filter: blur(2px);
+    opacity: 1;
+    transform: translate(-50%, -50%);
 }
 
 .custom-cursor.hover {
@@ -297,6 +300,8 @@ body {
     z-index: 9999;
     transition: transform 0.15s ease-out, background 0.3s ease;
     box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+    opacity: 1;
+    transform: translate(-50%, -50%);
 }
 
 .custom-cursor-dot.hover {
