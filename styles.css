@@ -857,14 +857,14 @@ section {
 
 .macbook-screen {
     position: relative;
-    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-    border-radius: 12px 12px 2px 2px;
-    padding: 20px 20px 0 20px;
+    background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+    border-radius: 8px 8px 2px 2px;
+    padding: 8px 8px 0 8px;
     box-shadow: 
         0 0 0 1px rgba(255, 255, 255, 0.1),
         0 20px 60px rgba(0, 0, 0, 0.5),
         inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .macbook-notch {
@@ -872,10 +872,10 @@ section {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 150px;
-    height: 25px;
-    background: #000;
-    border-radius: 0 0 12px 12px;
+    width: 120px;
+    height: 20px;
+    background: #1a1a1a;
+    border-radius: 0 0 8px 8px;
     z-index: 2;
     box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -883,12 +883,12 @@ section {
 .macbook-screen::before {
     content: '';
     position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
     bottom: 0;
     background: #000;
-    border-radius: 8px 8px 0 0;
+    border-radius: 6px 6px 0 0;
     z-index: 1;
 }
 
@@ -896,7 +896,7 @@ section {
     position: relative;
     width: 100%;
     height: auto;
-    border-radius: 8px 8px 0 0;
+    border-radius: 6px 6px 0 0;
     display: block;
     z-index: 2;
     background: #000;
@@ -907,9 +907,9 @@ section {
 
 .macbook-base {
     position: relative;
-    height: 20px;
-    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
-    border-radius: 0 0 12px 12px;
+    height: 16px;
+    background: linear-gradient(180deg, #3a3a3a 0%, #2d2d2d 50%, #1f1f1f 100%);
+    border-radius: 0 0 8px 8px;
     box-shadow: 
         0 0 0 1px rgba(255, 255, 255, 0.1),
         0 10px 30px rgba(0, 0, 0, 0.4);
@@ -923,7 +923,7 @@ section {
     transform: translateX(-50%);
     width: 60%;
     height: 3px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+    background: linear-gradient(180deg, rgba(45, 45, 45, 0.5) 0%, rgba(31, 31, 31, 0.8) 100%);
     border-radius: 2px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
 }
@@ -935,7 +935,7 @@ section {
     transform: translateX(-50%);
     width: 25%;
     height: 8px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%);
+    background: linear-gradient(180deg, rgba(45, 45, 45, 0.4) 0%, rgba(31, 31, 31, 0.6) 100%);
     border-radius: 4px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
 }
@@ -1478,18 +1478,18 @@ section {
     }
     
     .macbook-screen {
-        padding: 12px 12px 0 12px;
+        padding: 6px 6px 0 6px;
     }
     
     .macbook-notch {
-        width: 100px;
-        height: 18px;
+        width: 90px;
+        height: 16px;
     }
     
     .macbook-screen::before {
-        top: 12px;
-        left: 12px;
-        right: 12px;
+        top: 6px;
+        left: 6px;
+        right: 6px;
     }
     
     .demo-video {
