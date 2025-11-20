@@ -425,7 +425,7 @@ body::before {
 
 .scroll-indicator {
     position: absolute;
-    bottom: 4rem;
+    bottom: 15rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -434,6 +434,26 @@ body::before {
     gap: 1rem;
     opacity: 0;
     animation: fadeIn 1s ease 1.5s forwards;
+    z-index: 100;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.scroll-indicator:hover {
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.scroll-arrow {
+    color: var(--accent);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    animation: scrollBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.5));
+}
+
+.scroll-indicator:hover .scroll-arrow {
+    opacity: 1;
+    color: var(--accent);
 }
 
 .scroll-line {
@@ -448,6 +468,17 @@ body::before {
     color: var(--text-muted);
     letter-spacing: 0.3em;
     text-transform: uppercase;
+}
+
+@keyframes scrollBounce {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(8px);
+        opacity: 1;
+    }
 }
 
 @keyframes scrollPulse {
@@ -796,6 +827,132 @@ section {
 .solution-network-text.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Demo Video Container */
+.demo-video-container {
+    margin-top: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease 0.3s;
+}
+
+.demo-video-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* MacBook Frame */
+.macbook-frame {
+    position: relative;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    perspective: 2000px;
+}
+
+.macbook-screen {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border-radius: 12px 12px 2px 2px;
+    padding: 20px 20px 0 20px;
+    box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+}
+
+.macbook-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 25px;
+    background: #000;
+    border-radius: 0 0 12px 12px;
+    z-index: 2;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.macbook-screen::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+    background: #000;
+    border-radius: 8px 8px 0 0;
+    z-index: 1;
+}
+
+.demo-video {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-radius: 8px 8px 0 0;
+    display: block;
+    z-index: 2;
+    background: #000;
+    border: none;
+    box-shadow: none;
+    transition: all 0.4s ease;
+}
+
+.macbook-base {
+    position: relative;
+    height: 20px;
+    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 10px 30px rgba(0, 0, 0, 0.4);
+    margin-top: -1px;
+}
+
+.macbook-keyboard {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.macbook-trackpad {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25%;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.macbook-frame:hover {
+    transform: translateY(-8px) scale(1.01);
+}
+
+.macbook-frame:hover .macbook-screen {
+    box-shadow: 
+        0 0 0 1px rgba(0, 245, 255, 0.2),
+        0 30px 80px rgba(0, 245, 255, 0.15),
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.macbook-frame {
+    transition: transform 0.4s ease;
 }
 
 .solution-capabilities {
@@ -1314,6 +1471,44 @@ section {
         margin-bottom: 2rem;
     }
     
+    .demo-video-container {
+        margin-top: 4rem;
+        padding: 0 1rem;
+    }
+    
+    .macbook-screen {
+        padding: 12px 12px 0 12px;
+    }
+    
+    .macbook-notch {
+        width: 100px;
+        height: 18px;
+    }
+    
+    .macbook-screen::before {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+    }
+    
+    .demo-video {
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .macbook-base {
+        height: 15px;
+    }
+    
+    .macbook-keyboard {
+        width: 70%;
+        height: 2px;
+    }
+    
+    .macbook-trackpad {
+        width: 30%;
+        height: 6px;
+    }
+    
     .network-grid {
         grid-template-columns: 1fr;
     }
@@ -1334,5 +1529,14 @@ section {
     .footer-links {
         grid-template-columns: 1fr;
         gap: 2rem;
+    }
+    
+    .scroll-indicator {
+        bottom: 8rem;
+    }
+    
+    .scroll-arrow {
+        width: 28px;
+        height: 28px;
     }
 }

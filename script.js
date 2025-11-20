@@ -458,6 +458,33 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Scroll indicator arrow click handler
+const scrollIndicator = document.querySelector('.scroll-indicator');
+if (scrollIndicator) {
+    scrollIndicator.addEventListener('click', () => {
+        const problemSection = document.querySelector('#problem');
+        if (problemSection) {
+            const navHeight = document.querySelector('.main-nav').offsetHeight;
+            const targetPosition = problemSection.offsetTop - navHeight;
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+    
+    // Add hover effect to cursor
+    scrollIndicator.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+        cursorDot.classList.add('hover');
+    });
+    
+    scrollIndicator.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+        cursorDot.classList.remove('hover');
+    });
+}
+
 // Intersection Observer for scroll animations
 const observerOptions = {
     threshold: 0.1,
@@ -482,6 +509,7 @@ const animatedElements = document.querySelectorAll(`
     .flow-connector,
     .solution-main-text,
     .solution-network-text,
+    .demo-video-container,
     .capability-card,
     .network-intro,
     .network-item,
