@@ -408,6 +408,7 @@ body::before {
     align-items: center;
     justify-content: center;
     position: relative;
+    padding-top: 5vh;
 }
 
 .mission-overlay {
